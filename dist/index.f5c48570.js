@@ -584,6 +584,8 @@ root.append(new (0, _appDefault.default)().el);
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _heropy = require("./core/heropy");
+var _fruitItme = require("./components/FruitItme");
+var _fruitItmeDefault = parcelHelpers.interopDefault(_fruitItme);
 class App extends (0, _heropy.Component) {
     constructor(){
         super({
@@ -609,10 +611,15 @@ class App extends (0, _heropy.Component) {
         console.log(this.state.fruits);
         this.el.innerHTML = /*html*/ `
         <h1>Fruits</h1>
-        <ul>
-            ${this.state.fruits.filter((fruit)=>fruit.price < 3000).map((fruit)=>`<li>${fruit.name}</li>`).join("")}
-        </ul>
+        <ul></ul>
     `;
+        const ulEl = this.el.querySelector("ul");
+        ulEl.append(...this.state.fruits.map((fruit)=>new (0, _fruitItmeDefault.default)({
+                props: {
+                    name: fruit.name,
+                    price: fruit.price
+                }
+            }).el));
     }
 } // export default class App{
  //     constructor() {
@@ -658,16 +665,17 @@ class App extends (0, _heropy.Component) {
  // }
 exports.default = App;
 
-},{"./core/heropy":"57bZf","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"57bZf":[function(require,module,exports) {
+},{"./core/heropy":"57bZf","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./components/FruitItme":"c1eiQ"}],"57bZf":[function(require,module,exports) {
 ////component
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Component", ()=>Component);
 class Component {
     constructor(payload = {}){
-        const { tagName = "div", state = {} } = payload;
+        const { tagName = "div", state = {}, props = {} } = payload;
         this.el = document.createElement(tagName);
         this.state = state;
+        this.props = props;
         this.render();
     }
     render() {}
@@ -703,6 +711,29 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}]},["fH7gS","8ZNvh"], "8ZNvh", "parcelRequire63d4")
+},{}],"c1eiQ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _heropy = require("../core/heropy");
+class FruitItem extends (0, _heropy.Component) {
+    constructor(payload){
+        super({
+            tagName: "li",
+            props: payload.props
+        });
+    }
+    render() {
+        this.el.innerHTML = /*html*/ `
+        <span>${this.props.name}</span>
+        <span>${this.props.price}</span>
+    `;
+        this.el.onclick = ()=>{
+            console.log(this.props.name);
+        };
+    }
+}
+exports.default = FruitItem;
+
+},{"../core/heropy":"57bZf","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fH7gS","8ZNvh"], "8ZNvh", "parcelRequire63d4")
 
 //# sourceMappingURL=index.f5c48570.js.map
