@@ -1,5 +1,5 @@
-import { Component } from "./core/heropy.js";
-import TheHeader from "./components/TheHeader.js";
+import { Component } from "./core/heropy";
+import TheHeader from "./components/TheHeader";
 
 export default class App extends Component {
   render() {
