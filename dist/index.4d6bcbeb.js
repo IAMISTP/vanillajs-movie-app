@@ -644,6 +644,8 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Component", ()=>Component);
 parcelHelpers.export(exports, "createRouter", ()=>createRouter);
+///// store
+parcelHelpers.export(exports, "Store", ()=>Store);
 class Component {
     constructor(payload = {}){
         const { tagName = "div", state = {}, props = {} } = payload;
@@ -686,6 +688,23 @@ function createRouter(routes) {
         });
         routeRender(routes); //최초호출
     };
+}
+class Store {
+    constructor(state){
+        this.state = {};
+        this.observers = {}; //감시자들
+        for(const key in state)Object.defineProperty(this.state, key, {
+            get: ()=>state[key],
+            set: (val)=>{
+                state[key] = val;
+                this.observers[key]();
+            }
+        }); //this.state 라는 객체데이터의 속성을 정의
+    }
+    subscribe(key, cb) {
+        //this.state 가 변경되는지 감시
+        this.observers[key] = cb;
+    }
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
@@ -759,17 +778,70 @@ exports.default = (0, _heropy.createRouter)([
 },{"../core/heropy":"57bZf","./Home":"0JSNG","./About":"gdB30","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"0JSNG":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+var _message = require("../components/Message");
+var _messageDefault = parcelHelpers.interopDefault(_message);
+var _textField = require("../components/TextField");
+var _textFieldDefault = parcelHelpers.interopDefault(_textField);
 var _heropy = require("../core/heropy");
 class Home extends (0, _heropy.Component) {
     render() {
         this.el.innerHTML = /* html */ `
             <h1>Home</h1>
         `;
+        this.el.append(new (0, _textFieldDefault.default)().el, new (0, _messageDefault.default)().el);
     }
 }
 exports.default = Home;
 
-},{"../core/heropy":"57bZf","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gdB30":[function(require,module,exports) {
+},{"../core/heropy":"57bZf","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../components/TextField":"e6IWT","../components/Message":"i84kQ"}],"e6IWT":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _heropy = require("../core/heropy");
+var _message = require("../store/message");
+var _messageDefault = parcelHelpers.interopDefault(_message);
+class TextField extends (0, _heropy.Component) {
+    render() {
+        this.el.innerHTML = /* html */ `
+        <input value='${(0, _messageDefault.default).state.message}'/>
+        `;
+        const inputEl = this.el.querySelector("input");
+        inputEl.addEventListener("input", ()=>{
+            (0, _messageDefault.default).state.message = inputEl.value;
+        });
+    }
+}
+exports.default = TextField;
+
+},{"../core/heropy":"57bZf","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../store/message":"4gYOO"}],"4gYOO":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _heropy = require("../core/heropy");
+exports.default = new (0, _heropy.Store)({
+    message: "hello~"
+});
+
+},{"../core/heropy":"57bZf","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"i84kQ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _heropy = require("../core/heropy");
+var _message = require("../store/message");
+var _messageDefault = parcelHelpers.interopDefault(_message);
+class Message extends (0, _heropy.Component) {
+    constructor(){
+        super();
+        (0, _messageDefault.default).subscribe("message", ()=>{
+            this.render();
+        });
+    }
+    render() {
+        this.el.innerHTML = /* html */ `
+            <h2>${(0, _messageDefault.default).state.message}</h2>
+        `;
+    }
+}
+exports.default = Message;
+
+},{"../core/heropy":"57bZf","../store/message":"4gYOO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gdB30":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _heropy = require("../core/heropy");

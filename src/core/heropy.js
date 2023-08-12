@@ -50,3 +50,24 @@ export function createRouter(routes) {
     routeRender(routes); //최초호출
   };
 }
+
+///// store
+export class Store {
+  constructor(state) {
+    this.state = {};
+    this.observers = {}; //감시자들
+    for (const key in state) {
+      Object.defineProperty(this.state, key, {
+        get: () => state[key], //state['message']
+        set: (val) => {
+          state[key] = val;
+          this.observers[key]();
+        },
+      }); //this.state 라는 객체데이터의 속성을 정의
+    }
+  }
+  subscribe(key, cb) {
+    //this.state 가 변경되는지 감시
+    this.observers[key] = cb;
+  }
+}
