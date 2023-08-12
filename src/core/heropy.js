@@ -9,3 +9,13 @@ export class Component {
   }
   render() {}
 }
+
+////  Router
+export function createRouter(route) {
+  return function () {
+    window.addEventListener("popstate", () => {
+      routeRender(routes);
+    });
+    routeRender();
+  };
+}
