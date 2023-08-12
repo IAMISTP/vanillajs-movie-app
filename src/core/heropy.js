@@ -61,13 +61,17 @@ export class Store {
         get: () => state[key], //state['message']
         set: (val) => {
           state[key] = val;
-          this.observers[key]();
+          this.observers[key].forEach((observer) => observer(val));
         },
       }); //this.state 라는 객체데이터의 속성을 정의
     }
   }
   subscribe(key, cb) {
+    console.log(this.observers);
+    Array.isArray(this.observers[key])
+      ? this.observers[key].push(cb)
+      : (this.observers[key] = [cb]);
     //this.state 가 변경되는지 감시
-    this.observers[key] = cb;
+    // this.observers[key] = cb;
   }
 }

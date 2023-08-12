@@ -583,7 +583,7 @@ const root = document.querySelector("#root");
 root.append(new (0, _appDefault.default)().el);
 (0, _routesDefault.default)();
 
-},{"./App":"2kQhy","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./routes":"3L9mC"}],"2kQhy":[function(require,module,exports) {
+},{"./App":"2kQhy","./routes":"3L9mC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2kQhy":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _heropy = require("./core/heropy");
@@ -697,13 +697,17 @@ class Store {
             get: ()=>state[key],
             set: (val)=>{
                 state[key] = val;
-                this.observers[key]();
+                this.observers[key].forEach((observer)=>observer(val));
             }
         }); //this.state 라는 객체데이터의 속성을 정의
     }
     subscribe(key, cb) {
-        //this.state 가 변경되는지 감시
-        this.observers[key] = cb;
+        console.log(this.observers);
+        Array.isArray(this.observers[key]) ? this.observers[key].push(cb) : this.observers[key] = [
+            cb
+        ];
+    //this.state 가 변경되는지 감시
+    // this.observers[key] = cb;
     }
 }
 
@@ -782,45 +786,20 @@ var _message = require("../components/Message");
 var _messageDefault = parcelHelpers.interopDefault(_message);
 var _textField = require("../components/TextField");
 var _textFieldDefault = parcelHelpers.interopDefault(_textField);
+var _title = require("../components/Title");
+var _titleDefault = parcelHelpers.interopDefault(_title);
 var _heropy = require("../core/heropy");
 class Home extends (0, _heropy.Component) {
     render() {
         this.el.innerHTML = /* html */ `
             <h1>Home</h1>
         `;
-        this.el.append(new (0, _textFieldDefault.default)().el, new (0, _messageDefault.default)().el);
+        this.el.append(new (0, _textFieldDefault.default)().el, new (0, _messageDefault.default)().el, new (0, _titleDefault.default)().el);
     }
 }
 exports.default = Home;
 
-},{"../core/heropy":"57bZf","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../components/TextField":"e6IWT","../components/Message":"i84kQ"}],"e6IWT":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _heropy = require("../core/heropy");
-var _message = require("../store/message");
-var _messageDefault = parcelHelpers.interopDefault(_message);
-class TextField extends (0, _heropy.Component) {
-    render() {
-        this.el.innerHTML = /* html */ `
-        <input value='${(0, _messageDefault.default).state.message}'/>
-        `;
-        const inputEl = this.el.querySelector("input");
-        inputEl.addEventListener("input", ()=>{
-            (0, _messageDefault.default).state.message = inputEl.value;
-        });
-    }
-}
-exports.default = TextField;
-
-},{"../core/heropy":"57bZf","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../store/message":"4gYOO"}],"4gYOO":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _heropy = require("../core/heropy");
-exports.default = new (0, _heropy.Store)({
-    message: "hello~"
-});
-
-},{"../core/heropy":"57bZf","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"i84kQ":[function(require,module,exports) {
+},{"../components/Message":"i84kQ","../components/TextField":"e6IWT","../components/Title":"6wotK","../core/heropy":"57bZf","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"i84kQ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _heropy = require("../core/heropy");
@@ -840,6 +819,55 @@ class Message extends (0, _heropy.Component) {
     }
 }
 exports.default = Message;
+
+},{"../core/heropy":"57bZf","../store/message":"4gYOO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4gYOO":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _heropy = require("../core/heropy");
+exports.default = new (0, _heropy.Store)({
+    message: "hello~"
+});
+
+},{"../core/heropy":"57bZf","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"e6IWT":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _heropy = require("../core/heropy");
+var _message = require("../store/message");
+var _messageDefault = parcelHelpers.interopDefault(_message);
+class TextField extends (0, _heropy.Component) {
+    render() {
+        this.el.innerHTML = /* html */ `
+        <input value='${(0, _messageDefault.default).state.message}'/>
+        `;
+        const inputEl = this.el.querySelector("input");
+        inputEl.addEventListener("input", ()=>{
+            (0, _messageDefault.default).state.message = inputEl.value;
+        });
+    }
+}
+exports.default = TextField;
+
+},{"../core/heropy":"57bZf","../store/message":"4gYOO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6wotK":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _heropy = require("../core/heropy");
+var _message = require("../store/message");
+var _messageDefault = parcelHelpers.interopDefault(_message);
+class Title extends (0, _heropy.Component) {
+    constructor(){
+        super({
+            tagName: "h1"
+        });
+        (0, _messageDefault.default).subscribe("message", ()=>{
+            //messageStore 에 message 상태가 변경이 될때마다 뒤에 있는 callback 함수가 실행될것이다.
+            this.render();
+        });
+    }
+    render() {
+        this.el.textContent = `Title ${(0, _messageDefault.default).state.message}`;
+    }
+}
+exports.default = Title;
 
 },{"../core/heropy":"57bZf","../store/message":"4gYOO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gdB30":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
